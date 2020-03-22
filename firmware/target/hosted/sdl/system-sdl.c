@@ -56,6 +56,7 @@
 SDL_Surface    *gui_surface;
 
 bool            background = true;          /* use backgrounds by default */
+bool            fullscreen = false;
 #ifdef HAVE_REMOTE_LCD
 bool            showremote = true;          /* include remote by default */
 #endif
@@ -127,7 +128,6 @@ static int sdl_event_thread(void * param)
             height = SIM_LCD_HEIGHT;
         }
     }
-
     depth = LCD_DEPTH;
     if (depth < 8)
         depth = 16;
@@ -137,6 +137,9 @@ static int sdl_event_thread(void * param)
     /* Fullscreen mode for maemo app */
     flags |= SDL_FULLSCREEN;
 #endif
+    if(fullscreen){
+        flags |= SDL_FULLSCREEN;
+    }
 
     SDL_WM_SetCaption(UI_TITLE, NULL);
 
@@ -338,6 +341,11 @@ void sys_handle_argv(int argc, char *argv[])
                 printf("Disabling remote image.\n");
             }
 #endif
+            else if (!strcmp("--fullscreen", argv[x]))
+            {
+                fullscreen = true;
+                printf("Using Full Screen Mode.\n");
+            }
             else if (!strcmp("--old_lcd", argv[x]))
             {
                 having_new_lcd = false;
@@ -391,6 +399,7 @@ void sys_handle_argv(int argc, char *argv[])
                 printf("  --old_lcd \t [Player] simulate old playermodel (ROM version<4.51)\n");
                 printf("  --zoom [VAL]\t Window zoom (will disable backgrounds)\n");
                 printf("  --alarm \t Simulate a wake-up on alarm\n");
+                printf("  --fullscreen \t Use fullscreen mode\n");
                 printf("  --root [DIR]\t Set root directory\n");
                 printf("  --mapping \t Output coordinates and radius for mapping backgrounds\n");
                 exit(0);
